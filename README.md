@@ -34,6 +34,13 @@ Folder Structure
 ## Training
 Run for 20 epochs with LR of 0.01 and Batch size of 512
 
+1. We are using albumentations for image augmentation
+2. We are using Depthwise Separable Convolution for 3-block 
+3. We are using Dilated Convolution for all layers
+4. GAP
+
+
+
 ###Metrics
 <!-- ![Training Metrics](image.png) -->
 

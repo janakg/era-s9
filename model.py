@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+dropout_value_min = 0.03
 dropout_value = 0.1
 
 class Net(nn.Module):
@@ -12,13 +13,16 @@ class Net(nn.Module):
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
             nn.BatchNorm2d(32),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
             nn.BatchNorm2d(64),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), dilation=2, padding=2, bias=False),
             nn.ReLU(),
             nn.BatchNorm2d(32),
-
             nn.Dropout(dropout_value)
         ) # output_size = 32 , RF = 7
 
@@ -28,13 +32,16 @@ class Net(nn.Module):
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3, 3), padding=1, bias=False), # 11
             nn.ReLU(),
             nn.BatchNorm2d(32),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False), # 15
             nn.ReLU(),
             nn.BatchNorm2d(64),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), dilation=2, padding=2, bias=False), # 19
             nn.ReLU(),
             nn.BatchNorm2d(32),
-
             nn.Dropout(dropout_value)
         ) # output_size = 32 ,  RF = 19
 
@@ -44,13 +51,16 @@ class Net(nn.Module):
             nn.Conv2d(in_channels=32, out_channels=32, groups=32, kernel_size=(3, 3), padding=1, bias=False), # 27
             nn.ReLU(),
             nn.BatchNorm2d(32),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False), # 35
             nn.ReLU(),
             nn.BatchNorm2d(64),
+            nn.Dropout(dropout_value_min),
+            
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), dilation=2, padding=2, bias=False), # 43
             nn.ReLU(),
             nn.BatchNorm2d(32),
-
             nn.Dropout(dropout_value)
         ) # output_size = 32 ,  RF = 43
 
@@ -60,14 +70,14 @@ class Net(nn.Module):
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3, 3), padding=1, bias=False), # 59
             nn.ReLU(),
             nn.BatchNorm2d(32),
+
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False), # 75
             nn.ReLU(),
             nn.BatchNorm2d(64),
+
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), padding=1, bias=False), # 91
             nn.ReLU(),
             nn.BatchNorm2d(32),
-
-            nn.Dropout(dropout_value)
         ) # output_size = 32 ,  RF = 91
 
         self.dropout = nn.Dropout(dropout_value)
@@ -82,9 +92,9 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.convblock1(x)
-        x = self.convblock2(x)
-        x = self.convblock3(x)
-        x = self.convblock4(x)
+        x = x + self.convblock2(x)
+        x = x + self.convblock3(x)
+        x = x + self.convblock4(x)
         x = self.gap(x)
         x = self.ant(x)
 
