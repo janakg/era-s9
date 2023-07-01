@@ -41,7 +41,7 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 3 input 32
         self.convblock3 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3, 3), padding=1, bias=False), # 27
+            nn.Conv2d(in_channels=32, out_channels=32, groups=32, kernel_size=(3, 3), padding=1, bias=False), # 27
             nn.ReLU(),
             nn.BatchNorm2d(32),
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False), # 35
@@ -63,7 +63,7 @@ class Net(nn.Module):
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3, 3), padding=1, bias=False), # 75
             nn.ReLU(),
             nn.BatchNorm2d(64),
-            nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), dilation=2, padding=2, bias=False), # 91
+            nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(3, 3), padding=1, bias=False), # 91
             nn.ReLU(),
             nn.BatchNorm2d(32),
 
@@ -85,11 +85,7 @@ class Net(nn.Module):
         x = self.convblock2(x)
         x = self.convblock3(x)
         x = self.convblock4(x)
-
-        print(f'Pre-gap size: {x.shape}') # debug print statement
-        x = self.gap(x)        
-        print(f'Post-gap size: {x.shape}') # debug print statement
-
+        x = self.gap(x)
         x = self.ant(x)
 
         x = x.view(-1, 10)
