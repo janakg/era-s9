@@ -50,6 +50,7 @@ def test(model, device, test_loader, criterion):
 
     test_loss = 0
     test_succeeded = 0
+    batch_count = 0
 
     with torch.no_grad():
         for batch_idx, (data, target) in enumerate(test_loader):
@@ -57,11 +58,11 @@ def test(model, device, test_loader, criterion):
 
             output = model(data)
             test_loss += criterion(output, target, reduction='sum').item()  # sum up batch loss
-
+            batch_count += 1
             test_succeeded += GetCorrectPredCount(output, target)
 
 
-    test_loss /= len(test_loader.dataset)
+    test_loss = test_loss / batch_count 
     
     print('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
         test_loss, test_succeeded, len(test_loader.dataset),
